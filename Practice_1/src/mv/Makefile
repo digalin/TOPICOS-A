@@ -1,20 +1,30 @@
 #/**
 # \file
-# @brief Makefile for dgemv: sample program for cblas_dgemv function
-# @author Julio Jos&eacute; &Aacute;guila Guerrero
-# @date April 27th, 2021
-# */
+# @brief Makefile for dgemv: sample program for cblas_dgemv function and other algorithms for the matrix-vector product.
+# @author Diego
+# @date April 2nd, 2026
 CC = gcc
 FLAGS = -O3 -s -pipe -Wall -fomit-frame-pointer -march=native \
 	-I../array -w
 LIBRARY = ../array/array.a
-EXEC = dgemv
-all: ${EXEC}
-${EXEC}: ${EXEC}.c
-	${CC} ${FLAGS} -c ${EXEC}.c
-	${CC} ${FLAGS} -o ${EXEC} ${EXEC}.o ${LIBRARY} -lblas
+EXECS = dgemv mv_row mv_col
+
+all: ${EXECS}
+
+dgemv: dgemv.c
+	${CC} ${FLAGS} -c dgemv.c
+	${CC} ${FLAGS} -o dgemv dgemv.o ${LIBRARY} -lblas
+
+mv_row: mv_row.c
+	${CC} ${FLAGS} -c mv_row.c
+	${CC} ${FLAGS} -o mv_row mv_row.o ${LIBRARY} -lblas
+
+mv_col: mv_col.c
+	${CC} ${FLAGS} -c mv_col.c
+	${CC} ${FLAGS} -o mv_col mv_col.o ${LIBRARY} -lblas
+
 clean:
 	(rm -f core)
 	(rm -f *.o)
 	(rm -f *~)
-	(rm ${EXEC})
+	(rm -f ${EXECS})
