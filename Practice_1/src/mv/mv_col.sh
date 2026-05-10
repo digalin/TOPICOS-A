@@ -16,7 +16,7 @@ do
     echo "" > data.dat
     for i in {1..7}
     do
-        ./mv_col "${val}" "${val}" 1 off | awk '/^Data/ { print $2 " " $3}' >> data.dat
+        ./mv_col "${val}" | awk '/^Data/ { print $2 " " $3}' >> data.dat
         echo "${val} ${i} test finished"
     done
     cat data.dat | awk '{n = $1; sum += $2}; END{print n, sum/7}' >> mv_col.dat

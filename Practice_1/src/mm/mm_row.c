@@ -12,11 +12,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <string.h>
 #include <sys/time.h>
 
-static int main_mm_row(const int m, const int n, const int k,
-                       const int elements_type, const char* verbose);
+static int main_mm_row(const int n);
 
 int main
 (
@@ -26,59 +24,45 @@ int main
 {
     fprintf(stdout, "mm_row: sample program for matrix-matrix multiplication in C (row major).\n");
     fputc('\n', stdout);
-    if(argc != 6)
+    if(argc != 2)
     {
-        fprintf(stdout, "Use: mm_row <m:int> <n:int> <k:int> <0|1|2> <on|off>.\n");
+        fprintf(stdout, "Use: mm_row <n:int>.\n");
         return EXIT_FAILURE;
     }
-    main_mm_row(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]),
-                atoi(argv[4]), argv[5]);
+    main_mm_row(atoi(argv[1]));
     return EXIT_SUCCESS;
 }
 
-static int main_mm_row
-(
-    const int m,
-    const int n,
-    const int k,
-    const int elements_type,
-    const char* verbose
-)
+static int main_mm_row(const int n)
 {
     double* A = NULL;
     double* B = NULL;
     double* C = NULL;
-    int i, j, l;
+    int i, j, k;
     struct timeval start, finish;
     double runtime = 0.0;
 
-    assert(m > 0);
     assert(n > 0);
-    assert(k > 0);
-    assert(elements_type >= ZEROS && elements_type <= RAND);
-    A = array_new(m, k, elements_type);
+    A = array_new(n, n, ONES);
     assert(A != NULL);
-    B = array_new(k, n, elements_type);
+    B = array_new(n, n, ONES);
     assert(B != NULL);
-    C = array_new(m, n, ZEROS);
+    C = array_new(n, n, ZEROS);
     assert(C != NULL);
 
     gettimeofday(&start, NULL);
-    /* row major: i -> j -> k, inner loop accesses B by columns */
-    for(i = 0; i < m; i++)
-        for(j = 0; j < n; j++)
-            for(l = 0; l < k; l++)
-                C[i*n + j] += A[i*k + l] * B[l*n + j];
+    /* row major: inner loop traverses columns sequentially (cache-friendly) */
+    for(i = 0; i < n; i++)
+        for(k = 0; k < n; k++)
+        {
+            double r = A[i*n + k];
+            for(j = 0; j < n; j++)
+                C[i*n + j] += r * B[k*n + j];
+        }
     gettimeofday(&finish, NULL);
 
-    if(strcmp(verbose, "on") == 0)
-    {
-        array_show(m, k, A, "A");
-        array_show(k, n, B, "B");
-    }
-    array_show(m, n, C, "C");
     runtime = timeval_diff(&finish, &start);
-    fprintf(stdout, "Data: %d %lf\n", m, runtime);
+    fprintf(stdout, "Data: %d %lf\n", n, runtime);
     free(A);
     free(B);
     free(C);

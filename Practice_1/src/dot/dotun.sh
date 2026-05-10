@@ -16,10 +16,9 @@ do
     echo "" > data.dat
     for i in {1..7}
     do
-        ./dot_unroll "${val}" 1 off | awk '/^Data/ { print $2 " " $3}' >> du_data.dat
+        ./dot_unroll "${val}" | awk '/^Data/ { print $2 " " $3}' >> data.dat
         echo "${val} ${i} test finished"
     done
-    cat du_data.dat | awk '{n = $1; sum += $2}; END{print n, sum/7}' >> dot_unroll.dat
+    cat data.dat | awk '{n = $1; sum += $2}; END{print n, sum/7}' >> dot_unroll.dat
 done
 cat dot_unroll.dat | awk '$0 != "" {print $0}'
-gnuplot < dot_unroll.p

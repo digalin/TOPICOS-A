@@ -1,7 +1,7 @@
 /**
 @brief Sample program for matrix-matrix multiplication in C (column major)
 @author Diego
-@date May 2nd, 2026
+@date May 10th, 2026
 */
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
@@ -12,11 +12,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <string.h>
 #include <sys/time.h>
 
-static int main_mm_col(const int m, const int n, const int k,
-                       const int elements_type, const char* verbose);
+static int main_mm_col(const int n);
 
 int main
 (
@@ -26,59 +24,47 @@ int main
 {
     fprintf(stdout, "mm_col: sample program for matrix-matrix multiplication in C (column major).\n");
     fputc('\n', stdout);
-    if(argc != 6)
+    if(argc != 2)
     {
-        fprintf(stdout, "Use: mm_col <m:int> <n:int> <k:int> <0|1|2> <on|off>.\n");
+        fprintf(stdout, "Use: mm_col <n:int>.\n");
         return EXIT_FAILURE;
     }
-    main_mm_col(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]),
-                atoi(argv[4]), argv[5]);
+    main_mm_col(atoi(argv[1]));
     return EXIT_SUCCESS;
 }
 
-static int main_mm_col
-(
-    const int m,
-    const int n,
-    const int k,
-    const int elements_type,
-    const char* verbose
-)
+static int main_mm_col(const int n)
 {
     double* A = NULL;
     double* B = NULL;
     double* C = NULL;
-    int i, j, l;
+    int i, j, k;
     struct timeval start, finish;
     double runtime = 0.0;
 
-    assert(m > 0);
     assert(n > 0);
-    assert(k > 0);
-    assert(elements_type >= ZEROS && elements_type <= RAND);
-    A = array_new(m, k, elements_type);
+    A = array_new(n, n, ONES);
     assert(A != NULL);
-    B = array_new(k, n, elements_type);
+    B = array_new(n, n, ONES);
     assert(B != NULL);
-    C = array_new(m, n, ZEROS);
+    C = array_new(n, n, ZEROS);
     assert(C != NULL);
 
     gettimeofday(&start, NULL);
-    /* column major: j -> l -> i, inner loop accesses A by rows (column-friendly) */
-    for(j = 0; j < n; j++)
-        for(l = 0; l < k; l++)
-            for(i = 0; i < m; i++)
-                C[i*n + j] += A[i*k + l] * B[l*n + j];
+    /* Column-oriented access: k -> i -> j loop structure */
+    for(k = 0; k < n; k++)
+    {
+        for(i = 0; i < n; i++)
+        {
+            double r = A[i*n + k];  /* Cache A[i][k] in register */
+            for(j = 0; j < n; j++)
+                C[i*n + j] += r * B[k*n + j];  /* Sequential access to B */
+        }
+    }
     gettimeofday(&finish, NULL);
 
-    if(strcmp(verbose, "on") == 0)
-    {
-        array_show(m, k, A, "A");
-        array_show(k, n, B, "B");
-    }
-    array_show(m, n, C, "C");
     runtime = timeval_diff(&finish, &start);
-    fprintf(stdout, "Data: %d %lf\n", m, runtime);
+    fprintf(stdout, "Data: %d %lf\n", n, runtime);
     free(A);
     free(B);
     free(C);

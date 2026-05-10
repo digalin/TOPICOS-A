@@ -15,8 +15,7 @@
 #include <string.h>
 #include <sys/time.h>
 
-static int main_dot_unroll(const int n, const int elements_type,
-                            const char* verbose);
+static int main_dot_unroll(const int n);
 
 int main
 (
@@ -26,21 +25,16 @@ int main
 {
     fprintf(stdout, "dot_unroll: sample program for dot product in C with loop unrolling.\n");
     fputc('\n', stdout);
-    if(argc != 4)
+    if(argc != 2)
     {
-        fprintf(stdout, "Use: dot_unroll <n:int> <0|1|2> <on|off>.\n");
+        fprintf(stdout, "Use: dot_unroll <n:int>.\n");
         return EXIT_FAILURE;
     }
-    main_dot_unroll(atoi(argv[1]), atoi(argv[2]), argv[3]);
+    main_dot_unroll(atoi(argv[1]));
     return EXIT_SUCCESS;
 }
 
-static int main_dot_unroll
-(
-    const int n,
-    const int elements_type,
-    const char* verbose
-)
+static int main_dot_unroll(const int n)
 {
     double c0 = 0.0, c1 = 0.0, c2 = 0.0, c3 = 0.0;
     double* x = NULL;
@@ -51,10 +45,9 @@ static int main_dot_unroll
     double runtime = 0.0;
 
     assert(n > 0);
-    assert(elements_type >= ZEROS && elements_type <= RAND);
-    x = array_new(n, 1, elements_type);
+    x = array_new(n, 1, ONES);
     assert(x != NULL);
-    y = array_new(n, 1, elements_type);
+    y = array_new(n, 1, ONES);
     assert(y != NULL);
 
     gettimeofday(&start, NULL);
@@ -71,11 +64,6 @@ static int main_dot_unroll
         c0 += x[i] * y[i];
     gettimeofday(&finish, NULL);
 
-    if(strcmp(verbose, "on") == 0)
-    {
-        array_show(n, 1, x, "x");
-        array_show(n, 1, y, "y");
-    }
     fprintf(stdout, "c = %lf\n", c0 + c1 + c2 + c3);
     runtime = timeval_diff(&finish, &start);
     fprintf(stdout, "Data: %d %lf\n", n, runtime);

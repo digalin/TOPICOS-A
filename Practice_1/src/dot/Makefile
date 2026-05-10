@@ -6,6 +6,8 @@
 CC = gcc
 FLAGS = -O3 -s -pipe -Wall -fomit-frame-pointer -march=native \
 	-I../array -w
+FLAGS_O0 = -O0 -s -pipe -Wall -fomit-frame-pointer -march=native \
+	-I../array -w
 LIBRARY = ../array/array.a
 EXECS = ddot dot dot_unroll
 

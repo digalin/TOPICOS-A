@@ -7,9 +7,10 @@
 CC = gcc
 FLAGS = -O3 -s -pipe -Wall -fomit-frame-pointer -march=native \
 	-I../array -w
+FLAGS_O0 = -O0 -s -pipe -Wall -fomit-frame-pointer -march=native \
+	-I../array -w
 LIBRARY = ../array/array.a
 EXECS = dgemm mm_row mm_col
-
 all: ${EXECS}
 
 dgemm: dgemm.c

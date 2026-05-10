@@ -15,8 +15,7 @@
 #include <string.h>
 #include <sys/time.h>
 
-static int main_dot(const int n, const int elements_type,
-                    const char* verbose);
+static int main_dot(const int n);
 
 int main
 (
@@ -26,21 +25,16 @@ int main
 {
     fprintf(stdout, "dot: sample program for dot product in C.\n");
     fputc('\n', stdout);
-    if(argc != 4)
+    if(argc != 2)
     {
-        fprintf(stdout, "Use: dot <n:int> <0|1|2> <on|off>.\n");
+        fprintf(stdout, "Use: dot <n:int>.\n");
         return EXIT_FAILURE;
     }
-    main_dot(atoi(argv[1]), atoi(argv[2]), argv[3]);
+    main_dot(atoi(argv[1]));
     return EXIT_SUCCESS;
 }
 
-static int main_dot
-(
-    const int n,
-    const int elements_type,
-    const char* verbose
-)
+static int main_dot(const int n)
 {
     double c = 0.0;
     double* x = NULL;
@@ -50,10 +44,9 @@ static int main_dot
     double runtime = 0.0;
 
     assert(n > 0);
-    assert(elements_type >= ZEROS && elements_type <= RAND);
-    x = array_new(n, 1, elements_type);
+    x = array_new(n, 1, ONES);
     assert(x != NULL);
-    y = array_new(n, 1, elements_type);
+    y = array_new(n, 1, ONES);
     assert(y != NULL);
 
     gettimeofday(&start, NULL);
@@ -61,11 +54,6 @@ static int main_dot
         c += x[i] * y[i];
     gettimeofday(&finish, NULL);
 
-    if(strcmp(verbose, "on") == 0)
-    {
-        array_show(n, 1, x, "x");
-        array_show(n, 1, y, "y");
-    }
     fprintf(stdout, "c = %lf\n", c);
     runtime = timeval_diff(&finish, &start);
     fprintf(stdout, "Data: %d %lf\n", n, runtime);
