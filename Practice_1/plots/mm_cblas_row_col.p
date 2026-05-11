@@ -1,5 +1,5 @@
-set term post eps enhanced color solid lw 1 size 9.0, 3.5 "Arial" 24
-set output "../img/mm_c_cblas_1.eps"
+set term post eps enhanced color solid lw 1 size 9.0, 5.0 "Arial" 24
+set output "../img/mm_c_cblas.eps"
 set encoding iso_8859_1
 set size 1.0, 1.0
 set grid
@@ -15,8 +15,8 @@ set multiplot
 set size 1.0, 1.0
 
 plot "../src/mm/dgemm.dat"  using 1:2 title "Cblas" with lines lw 2 lc rgb "blue", \
-     "../src/mm/mm_row.dat" using 1:2 title "C row" with lines lw 2 lc rgb "red", \
-     "../src/mm/mm_col.dat" using 1:2 title "C column" with lines lw 2 lc rgb "green"
+     "../src/mm/mm_row.dat" using 1:2 title "C Opt" with lines lw 2 lc rgb "red", \
+     "../src/mm/mm_col.dat" using 1:2 title "C Base" with lines lw 2 lc rgb "green"
 set size 1.0, 1.0 
 set origin 0.0, 0.0
 unset multiplot 

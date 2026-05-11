@@ -51,16 +51,14 @@ static int main_mm_col(const int n)
     assert(C != NULL);
 
     gettimeofday(&start, NULL);
-    /* Column-oriented access: k -> i -> j loop structure */
-    for(k = 0; k < n; k++)
-    {
-        for(i = 0; i < n; i++)
+    /* column major JKI: inner loop accesses C and A by jumping rows (cache-unfriendly) */
+    for(j = 0; j < n; j++)
+        for(k = 0; k < n; k++)
         {
-            double r = A[i*n + k];  /* Cache A[i][k] in register */
-            for(j = 0; j < n; j++)
-                C[i*n + j] += r * B[k*n + j];  /* Sequential access to B */
+            double r = B[k*n + j];  /* cache B[k][j] in register */
+            for(i = 0; i < n; i++)
+                C[i*n + j] += A[i*n + k] * r;  /* i varies -> jumps n positions in memory */
         }
-    }
     gettimeofday(&finish, NULL);
 
     runtime = timeval_diff(&finish, &start);

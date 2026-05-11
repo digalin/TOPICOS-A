@@ -51,10 +51,14 @@ static int main_mv_col(const int n)
     assert(y != NULL);
 
     gettimeofday(&start, NULL);
-    /* column major: inner loop traverses rows (cache-unfriendly in C row-major storage) */
+    /* column-major semantics: access A so columns are contiguous in memory */
     for(j = 0; j < n; j++)
+    {
+        double xj = x[j];
+        int base = j * n;
         for(i = 0; i < n; i++)
-            y[i] += A[i*n + j] * x[j];
+            y[i] += A[base + i] * xj;
+    }
     gettimeofday(&finish, NULL);
 
     runtime = timeval_diff(&finish, &start);

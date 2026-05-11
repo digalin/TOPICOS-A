@@ -16,7 +16,7 @@ do
     echo "" > data.dat
     for i in {1..7}
     do
-        ./dgemv "${val}" "${val}" 1 off | awk $info '/^Data/ { print $2 " " $3}' >> data.dat
+        ./dgemv "${val}" "${val}" | awk $info '/^Data/ { print $2 " " $3}' >> data.dat
         echo "${val} ${i} test finished"
     done
     cat data.dat | awk $info '{n = $1; sum += $2}; END{print n, sum/7}' >> dgemv.dat

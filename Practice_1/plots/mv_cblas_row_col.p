@@ -11,8 +11,8 @@ set key left
 set multiplot 
 set size 1.0, 1.0
 plot "../src/mv/dgemv.dat"  using 1:2 title "Cblas" with lines lw 2 lc rgb "blue", \
-     "../src/mv/mv_row.dat" using 1:2 title "C row" with lines lw 2 lc rgb "red", \
-     "../src/mv/mv_col.dat" using 1:2 title "C column" with lines lw 2 lc rgb "green"
+     "../src/mv/mv_row.dat" using 1:2 title "C Opt" with lines lw 2 lc rgb "red", \
+     "../src/mv/mv_col.dat" using 1:2 title "C Base" with lines lw 2 lc rgb "green"
 set size 1.0, 1.0 
 set origin 0.5, 0.0
 unset multiplot 

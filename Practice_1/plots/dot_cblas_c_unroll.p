@@ -15,7 +15,7 @@ set size 1.0, 1.0
 set origin 0.0, 0.0 
 
 plot "../src/dot/ddot.dat"  using 1:2 title "Cblas" with lines lw 2 lc rgb "blue", \
-     "../src/dot/dot.dat" using 1:2 title "C" with lines lw 2 lc rgb "red", \
+     "../src/dot/dot.dat" using 1:2 title "C Base" with lines lw 2 lc rgb "red", \
      "../src/dot/dot_unroll.dat" using 1:2 title "loop unrolling C" with lines lw 2 lc rgb "green"
 set size 1.0, 1.0 
 set origin 0.5, 0.0

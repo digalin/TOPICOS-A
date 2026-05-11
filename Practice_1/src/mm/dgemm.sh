@@ -16,10 +16,9 @@ do
     echo "" > data.dat
     for i in {1..7}
     do
-        ./dgemm "${val}" "${val}" "${val}" 1 off | awk '/^Data/ { print $2, $3 }' >> data.dat
+        ./dgemm "${val}" "${val}" "${val}" | awk '/^Data/ { print $2, $3 }' >> data.dat
         echo "${val} ${i} test finished"
     done
     cat data.dat | awk '{ n = $1; sum += $2 } END { if (NR>0) print n, sum/7; else print "", 0 }' >> dgemm.dat
 done
 cat dgemm.dat | awk '$0 != "" {print $0}'
-gnuplot < dgemm.p

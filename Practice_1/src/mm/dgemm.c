@@ -14,9 +14,7 @@
 #include <assert.h>
 #include <string.h>
 #include <sys/time.h>
-static int main_dgemm(const int m, const int n, const int k,
-const int elements_type,
-const char* verbose);
+static int main_dgemm(const int m, const int n, const int k);
 int main
 (
 int argc,
@@ -25,22 +23,19 @@ char** argv
 {
     fprintf(stdout, "dgemm: sample program for cblas_dgemm function.\n");
     fputc('\n', stdout);
-    if(argc != 6)
+    if(argc != 4)
     {
-    fprintf(stdout, "Use: dgemm <m:int> <n:int> <k:int> <0|1|2> <on|off>.\n");
+    fprintf(stdout, "Use: dgemm <m:int> <n:int> <k:int>.\n");
     return EXIT_FAILURE;
     }
-    main_dgemm(atoi( argv[ 1]), atoi( argv[ 2]), atoi( argv[ 3]),
-    atoi( argv[ 4]),argv[ 5]);
+    main_dgemm(atoi( argv[ 1]), atoi( argv[ 2]), atoi( argv[ 3]));
     return EXIT_SUCCESS;
 }
 static int main_dgemm
 (
     const int m,
     const int n,
-    const int k,
-    const int elements_type,
-    const char* verbose
+    const int k
 )
 {
     double* A = NULL;
@@ -57,10 +52,9 @@ static int main_dgemm
     assert(m > 0);
     assert(n > 0);
     assert(k > 0);
-    assert(elements_type >= ZEROS && elements_type <= RAND);
-    A = array_new(m, k, elements_type);
+    A = array_new(m, k, ONES);
     assert(A != NULL);
-    B = array_new(k, n, elements_type);
+    B = array_new(k, n, ONES);
     assert(B != NULL);
     C = array_new(m, n, ZEROS);
     assert(C != NULL);
@@ -68,12 +62,6 @@ static int main_dgemm
     cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
     m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
     gettimeofday(&finish, NULL);
-    if(strcmp(verbose, "on") == 0)
-    {
-        array_show(m, k, A, "A");
-        array_show(k, n, B, "B");
-    }
-    array_show(m, n, C, "C");
     runtime = timeval_diff( &finish, &start);
     fprintf(stdout, "Data: %d %lf\n", m, runtime);
     free(A);
