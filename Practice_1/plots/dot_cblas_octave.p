@@ -1,4 +1,4 @@
-set term post eps enhanced color solid lw 1 size 5.0, 3.5 "Arial" 24
+set term post eps enhanced color solid lw 1 size 7.0, 3.5 "Arial" 24
 set output "../img/dot_octave_cblas.eps"
 set encoding iso_8859_1
 set size 1.0, 1.0
@@ -16,7 +16,7 @@ set origin 0.0, 0.0
 plot "../octave/dot.dat" using 1:2 title "Octave" with lines lw 2 lc rgb "red", \
      "../src/dot/ddot.dat"  using 1:2 title "Cblas" with lines lw 2 lc rgb "blue"
 set size 1.0, 1.0 
-set origin 0.0, 0.0
+set origin 0.5, 0.0
 unset multiplot 
 set output 
 set terminal pop
