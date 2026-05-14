@@ -1,4 +1,4 @@
-set term post eps enhanced color solid lw 1 size 7.0, 3.5 "Arial" 24
+set term post eps enhanced color solid lw 1 size 8.5, 4.5 "Arial" 24
 set output "../img/dot_octave_cblas.eps"
 set encoding iso_8859_1
 set size 1.0, 1.0
